@@ -1,16 +1,20 @@
+#settings.py
 import pygame
 from os import walk
 
-WIDTH = None
-HEIGHT = None
+WIDTH = 1000
+HEIGHT = 800
 FPS = 60
 BG_IMG = 'imgs/background.png'
+BG_COLOR = (102,204,204)
 bg_surf = None
 bg_rect = None
+background_x = 0
 player_size = 64
+running = True
 
 def initialize():
-  pygame.init()
+  #pygame.init()
   monitor_info = pygame.display.Info()
   global WIDTH, HEIGHT
   WIDTH = monitor_info.current_w
@@ -18,7 +22,7 @@ def initialize():
   return WIDTH, HEIGHT
 
 def background(image):
-  pygame.init()
+  #pygame.init()
   global bg_surf, bg_rect, WIDTH, HEIGHT
   bg_surf = pygame.image.load(image).convert_alpha()
   original_width, original_height = bg_surf.get_size()
@@ -28,14 +32,25 @@ def background(image):
   bg_rect = bg_surf.get_rect()
   return bg_surf, bg_rect
 
+def infinite_bg(screen,speed):
+  bg_surf, bg_rect = background(BG_IMG)
+  global background_x
+  background_x -= speed
+  if background_x <= -WIDTH:
+      background_x = 0
+  screen.fill(BG_COLOR)
+  screen.blit(bg_surf, (background_x, screen.get_height() - bg_surf.get_height()))
+  screen.blit(bg_surf, (background_x + WIDTH, screen.get_height() - bg_surf.get_height()))
+
 def import_folder(path,size): #képek beolvasása mappánként az animációhoz
+  #pygame.init()
   surface_list = []
   for _, _, img_files in walk(path):
-      for image in img_files: 
-          full_path = path+'/'+image
-          image_surf = pygame.image.load(full_path).convert_alpha()
-          new_width = player_size * size
-          new_height = int(image_surf.get_height() * (new_width/image_surf.get_width()))
-          small_image = pygame.transform.scale(image_surf, (new_width, new_height))
-          surface_list.append(small_image)
+    for image in img_files: 
+        full_path = path+'/'+image
+        image_surf = pygame.image.load(full_path).convert_alpha()
+        new_width = player_size * size
+        new_height = int(image_surf.get_height() * (new_width/image_surf.get_width()))
+        small_image = pygame.transform.scale(image_surf, (new_width, new_height))
+        surface_list.append(small_image)
   return surface_list
