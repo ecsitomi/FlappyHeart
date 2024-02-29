@@ -1,21 +1,24 @@
 #valentin.py
-import pygame, math
+import pygame
 from settings import initialize
 
 
 class Valentin(pygame.sprite.Sprite):
 
-  def __init__(self, random_height, random_speed):
+  def __init__(self, random_height, random_speed, right_side):
     super().__init__()
-    self.WIDTH, self.HEIGHT = initialize()
     self.image = pygame.image.load('imgs/valentin.png').convert_alpha()
-    self.rect = self.image.get_rect(center=(self.WIDTH + 50, random_height))
+    self.rect = self.image.get_rect(center=(right_side, random_height))
     self.speed = random_speed
-    self.amplitudo = 50
-    self.frequency = 0.01
-    self.time_passed = 0
+    self.speed_y = 2
+    self.counter = 0
+
+  def valentin_up_down(self):
+    self.counter += 1
+    if self.counter % 60 == 0:
+        self.speed_y = -self.speed_y
+    self.rect.y += self.speed_y
   
   def update(self):
+    self.valentin_up_down()
     self.rect.x -= self.speed
-    self.time_passed += 1
-    self.rect.y = int(self.rect.y + self.amplitudo * math.sin(self.time_passed * self.frequency))  # hullám szerű mozgás

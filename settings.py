@@ -15,8 +15,8 @@ bg_surf = None
 bg_rect = None
 background_x = 0
 player_size = 64
-running = False
-starting = True
+#running = False
+#starting = True
 font1 = 'font/FlappyBirdy.ttf'
 font2 = 'font/arial.ttf'
 
@@ -46,12 +46,10 @@ def infinite_bg(screen, speed):
   background_x -= speed
   if background_x <= -WIDTH:
     background_x = 0
-  screen.fill(BG_COLOR)
-  screen.blit(bg_surf,
-              (background_x, screen.get_height() - bg_surf.get_height()))
-  screen.blit(
-      bg_surf,
-      (background_x + WIDTH, screen.get_height() - bg_surf.get_height()))
+  screen.blit(bg_surf, (background_x, screen.get_height() - bg_surf.get_height()))
+  screen.blit(bg_surf, (background_x + WIDTH, screen.get_height() - bg_surf.get_height()))
+  
+
 
 
 def import_folder(path, size):  #képek beolvasása mappánként az animációhoz
@@ -72,8 +70,3 @@ def setup_font(size, font):
   font_path = font
   font_size = size
   return pygame.font.Font(font_path, font_size)
-
-
-def lighting(display, color, msec):
-  display.fill(color)
-  pygame.time.delay(msec)
