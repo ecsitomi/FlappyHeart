@@ -10,12 +10,15 @@ BG_COLOR = (102, 204, 204)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
+YELLOW = (200, 75, 0)
 bg_surf = None
 bg_rect = None
 background_x = 0
 player_size = 64
 running = False
 starting = True
+font1 = 'font/FlappyBirdy.ttf'
+font2 = 'font/arial.ttf'
 
 
 def initialize():
@@ -64,11 +67,13 @@ def import_folder(path, size):  #képek beolvasása mappánként az animációho
       surface_list.append(small_image)
   return surface_list
 
-def setup_font(size):
-  font_path = 'font/FlappyBirdy.ttf'
+
+def setup_font(size, font):
+  font_path = font
   font_size = size
   return pygame.font.Font(font_path, font_size)
 
-def lighting(display,color,msec):
+
+def lighting(display, color, msec):
   display.fill(color)
   pygame.time.delay(msec)

@@ -5,7 +5,9 @@ from player import Player
 from pipe import Pipe
 from scenes import Scenes
 
+
 class Game:
+
   def __init__(self, screen):
     self.WIDTH, self.HEIGHT = initialize()
     self.screen = screen
@@ -16,18 +18,20 @@ class Game:
     self.meters = 0
     self.frequency = 150
     self.bg_speed = 1
+    self.create = True
 
   def create_pipe(self):
-    if len(self.pipes ) < 7:
-      self.counter += 1
-      frequency = random.randint(120, 160)
-      if self.counter % frequency == 0:
-        color = random.randint(1,5)
-        y = random.randint(0, 100)
-        speed_y = random.randint(0,10)
-        speed_x = random.randint(1,5)
-        invert = random.choice([True, False])
-        self.pipes.add(Pipe(color, y, speed_y, speed_x, invert))
+    if self.create:
+      if len(self.pipes) < 7:
+        self.counter += 1
+        frequency = random.randint(120, 160)
+        if self.counter % frequency == 0:
+          color = random.randint(1, 5)
+          y = random.randint(0, 100)
+          speed_y = random.randint(0, 10)
+          speed_x = random.randint(1, 5)
+          invert = random.choice([True, False])
+          self.pipes.add(Pipe(color, y, speed_y, speed_x, invert))
 
   def check_collision(self):
     player = self.player.sprite
@@ -42,15 +46,16 @@ class Game:
       self.handle_death()
 
   def handle_death(self):
-    self.bg_speed = 0  
+    self.create = False
+    self.bg_speed = 0
     player = self.player.sprite
     player.status = 'death'
     player.gravity_speed = 0
     player.fly_speed = 0
     player.heart_rate = 0
     for pipe in self.pipes:
-      pipe.speed_x = 0  
-      pipe.speed_y = 0    
+      pipe.speed_x = 0
+      pipe.speed_y = 0
     scenes = Scenes(self.screen)
     scenes.ending()
     for event in pygame.event.get():
@@ -64,6 +69,21 @@ class Game:
           self.meters = 0
           self.bg_speed = 1
 
+  def player_scores(self):
+    player = self.player.sprite
+    if player.status == 'beat' and self.counter % 20 == 0:
+      self.meters += 1
+    scenes = Scenes(self.screen)
+    scenes.meters(self.meters)
+    if player.heart_rate < 100:
+      scenes.heart_rate(player.heart_rate, BLACK)
+    elif 100 < player.heart_rate < 150:
+      scenes.heart_rate(player.heart_rate, YELLOW)
+    elif 150 < player.heart_rate < 200:
+      scenes.heart_rate(player.heart_rate, RED)
+    elif player.heart_rate > 200:
+      self.handle_death()
+
   def run(self):
     infinite_bg(self.screen, self.bg_speed)
     self.pipes.update()
@@ -72,4 +92,4 @@ class Game:
     self.player.draw(self.screen)
     self.check_collision()
     self.create_pipe()
-    
+    self.player_scores()

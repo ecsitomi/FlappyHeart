@@ -45,10 +45,12 @@ class Player(pygame.sprite.Sprite):
     if keys[pygame.K_SPACE] and self.status == 'beat':
       self.rect.y -= self.fly_speed
       self.heart_rate += 1
-    else:
+    elif self.status == 'beat':
       self.heart_rate -= 1
-      if self.heart_rate == 50:
+      if self.heart_rate <= 50:
         self.heart_rate = 50
+    elif self.status == 'death':
+      self.heart_rate = 0
 
   def gravity(self):
     self.rect.y += self.gravity_speed
