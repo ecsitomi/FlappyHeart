@@ -103,14 +103,14 @@ class Game:
   def starting(self):
     self.player.sprite.gravity_speed = 0
     infinite_bg(self.screen, self.bg_speed)
-    self.writing('Flappy Heart', 72, self.WIDTH / 2, self.HEIGHT / 2, font1, BLACK)
-    self.writing('Hit SPACE to fly', 36, self.WIDTH / 2, (self.HEIGHT /7)*6, font1, BLACK)
+    self.writing('Flappy Heart', 96, self.WIDTH / 2, self.HEIGHT / 2, font1, BLACK)
+    self.writing('SPACE to fly', 56, self.WIDTH / 2, (self.HEIGHT /9)*8, font1, BLACK)
     self.player.update()
     self.player.draw(self.screen)
 
   def ending(self):
-    self.writing('Game Over', 72, self.WIDTH / 2, self.HEIGHT / 2, font1, BLACK)
-    self.writing('Hit SPACE to restart', 36, self.WIDTH / 2, (self.HEIGHT /7)*6, font1, BLACK)
+    self.writing('Game Over', 96, self.WIDTH / 2, self.HEIGHT / 2, font1, BLACK)
+    self.writing('SPACE to restart', 56, self.WIDTH / 2, (self.HEIGHT /9)*8, font1, BLACK)
 
   def restart(self):
     for event in pygame.event.get():
@@ -141,8 +141,8 @@ class Game:
 
   def player_meters(self, meters):
       self.symbols_surf_and_rect('imgs/hp.png', (self.WIDTH / 12, self.HEIGHT / 8))
-      self.symbols_surf_and_rect('imgs/flying_meters.png', ((self.WIDTH / 10) * 8, (self.HEIGHT / 8) * 7))
-      self.writing(f'flew {meters} meters', 24, (self.WIDTH / 9) * 8, (self.HEIGHT / 8) * 7, font2, BLACK)
+      self.symbols_surf_and_rect('imgs/flying_meters.png', ((self.WIDTH / 10) * 8, (self.HEIGHT / 9) * 8))
+      self.writing(f'{meters} meters', 24, (self.WIDTH / 9) * 8, (self.HEIGHT / 9) * 8, font2, BLACK)
 
   def symbols_surf_and_rect(self, image_path, center):
       symbol_surf = pygame.image.load(image_path).convert_alpha()
