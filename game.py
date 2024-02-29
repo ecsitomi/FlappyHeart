@@ -3,6 +3,7 @@ import pygame, random
 from settings import *
 from player import Player
 from pipe import Pipe
+from scenes import Scenes
 
 class Game:
   def __init__(self, screen):
@@ -50,6 +51,18 @@ class Game:
     for pipe in self.pipes:
       pipe.speed_x = 0  
       pipe.speed_y = 0    
+    scenes = Scenes(self.screen)
+    scenes.ending()
+    for event in pygame.event.get():
+      if event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_SPACE:
+          lighting(self.screen, RED, 1500)
+          self.player.empty()
+          self.pipes.empty()
+          self.player.add(Player())
+          self.counter = 0
+          self.meters = 0
+          self.bg_speed = 1
 
   def run(self):
     infinite_bg(self.screen, self.bg_speed)
