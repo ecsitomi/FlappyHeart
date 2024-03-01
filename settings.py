@@ -19,6 +19,7 @@ player_size = 64
 #starting = True
 font1 = 'font/FlappyBirdy.ttf'
 font2 = 'font/arial.ttf'
+file = 'highscore.txt'
 
 
 def initialize():
@@ -46,10 +47,11 @@ def infinite_bg(screen, speed):
   background_x -= speed
   if background_x <= -WIDTH:
     background_x = 0
-  screen.blit(bg_surf, (background_x, screen.get_height() - bg_surf.get_height()))
-  screen.blit(bg_surf, (background_x + WIDTH, screen.get_height() - bg_surf.get_height()))
-  
-
+  screen.blit(bg_surf,
+              (background_x, screen.get_height() - bg_surf.get_height()))
+  screen.blit(
+      bg_surf,
+      (background_x + WIDTH, screen.get_height() - bg_surf.get_height()))
 
 
 def import_folder(path, size):  #képek beolvasása mappánként az animációhoz
@@ -70,3 +72,4 @@ def setup_font(size, font):
   font_path = font
   font_size = size
   return pygame.font.Font(font_path, font_size)
+

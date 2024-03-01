@@ -22,6 +22,7 @@ class Game:
     self.bg_speed = 1
     self.create = True
     self.pipe_color = 1
+    self.highest = 0
 
   def counting(self):
     if self.create:
@@ -32,7 +33,7 @@ class Game:
         self.create_pipe()
       if self.counter % 1848 == 0 and len(self.valentin) < 1:
         self.create_valentin()
-      
+
   def create_pipe(self):
     color = self.pipe_color
     #color = random.randint(1, 5)
@@ -40,16 +41,17 @@ class Game:
     speed_y = random.randint(0, 10)
     speed_x = random.randint(1, 5)
     invert = random.choice([True, False])
-    self.pipes.add(Pipe(color, y, speed_y, speed_x, invert, self.right_side, self.HEIGHT))
+    self.pipes.add(
+        Pipe(color, y, speed_y, speed_x, invert, self.right_side, self.HEIGHT))
     self.pipe_color += 1
     if self.pipe_color > 5:
       self.pipe_color = 1
 
   def create_valentin(self):
-      random_height = random.randint(100, self.HEIGHT-100)
-      #random_speed =  random.randint(5, 8)
-      random_speed =  6
-      self.valentin.add(Valentin(random_height, random_speed, self.right_side))
+    random_height = random.randint(100, self.HEIGHT - 100)
+    #random_speed =  random.randint(5, 8)
+    random_speed = 6
+    self.valentin.add(Valentin(random_height, random_speed, self.right_side))
 
   def check_collision(self):
     player = self.player.sprite
@@ -85,7 +87,7 @@ class Game:
       pipe.speed_x = 0
       pipe.speed_y = 0
     #self.lighting(self.screen, RED, 100)
-    self.ending()
+    self.ending(file, self.highest, self.meters)
     self.restart()
 
   def lighting(self, display, color, msec):
@@ -94,7 +96,7 @@ class Game:
     self.writing('BOOM', 92, self.WIDTH / 2, self.HEIGHT / 2, font1, BLACK)
     pygame.display.update()
 
-  def writing(self, text, size, x, y, font,color):
+  def writing(self, text, size, x, y, font, color):
     font = setup_font(size, font)
     text = font.render(text, True, color)
     text_rect = text.get_rect(center=(x, y))
@@ -103,14 +105,32 @@ class Game:
   def starting(self):
     self.player.sprite.gravity_speed = 0
     infinite_bg(self.screen, self.bg_speed)
-    self.writing('Flappy Heart', 96, self.WIDTH / 2, self.HEIGHT / 2, font1, BLACK)
-    self.writing('SPACE to fly', 56, self.WIDTH / 2, (self.HEIGHT /9)*8, font1, BLACK)
+    self.writing('Flappy Heart', 96, self.WIDTH / 2, self.HEIGHT / 2, font1,
+                 BLACK)
+    self.writing('SPACE to fly', 56, self.WIDTH / 2, (self.HEIGHT / 9) * 8,
+                 font1, BLACK)
     self.player.update()
     self.player.draw(self.screen)
 
-  def ending(self):
-    self.writing('Game Over', 96, self.WIDTH / 2, self.HEIGHT / 2, font1, BLACK)
-    self.writing('SPACE to restart', 56, self.WIDTH / 2, (self.HEIGHT /9)*8, font1, BLACK)
+  def ending(self, file, highest, score):
+    self.writing('Game Over', 96, self.WIDTH / 2, self.HEIGHT / 3, font1, BLACK)
+    self.writing('SPACE to restart', 56, self.WIDTH / 2, (self.HEIGHT / 9) * 8, font1, BLACK)
+    try:
+        with open(file, 'r+') as f:
+            highest = int(f.read().strip())
+            if highest > score:
+                self.writing(f'Highest score: {highest} meters', 16, self.WIDTH / 2, self.HEIGHT / 2, font2, BLACK)
+                self.writing(f'Your score: {score} meters', 16, self.WIDTH / 2, (self.HEIGHT / 2) + 30, font2, BLACK)
+            else:
+                self.writing(f'Your highest score: {score} meters', 16, self.WIDTH / 2, self.HEIGHT / 2, font2, BLACK)
+                f.seek(0)  # Ugrás a fájl elejére
+                f.write(str(score))  # Új score érték felülírása
+    except FileNotFoundError:
+        with open(file, 'w') as f:
+            f.write(str(score))
+            self.writing(f'Your highest score: {score} meters', 16, self.WIDTH / 2, self.HEIGHT / 2, font2, BLACK)
+
+
 
   def restart(self):
     for event in pygame.event.get():
@@ -130,24 +150,28 @@ class Game:
     player = self.player.sprite
     heart_rate = player.heart_rate
     if heart_rate <= 100:
-        color = BLACK
+      color = BLACK
     elif 100 < heart_rate <= 150:
-        color = YELLOW
+      color = YELLOW
     elif 150 < heart_rate <= 200:
-        color = RED
+      color = RED
     else:
-        self.handle_death()
-    self.writing(f'{round(heart_rate)} bpm', 24, self.WIDTH / 7, self.HEIGHT / 8, font2, color)
+      self.handle_death()
+    self.writing(f'{round(heart_rate)} bpm', 24, self.WIDTH / 7,
+                 self.HEIGHT / 8, font2, color)
 
   def player_meters(self, meters):
-      self.symbols_surf_and_rect('imgs/hp.png', (self.WIDTH / 12, self.HEIGHT / 8))
-      self.symbols_surf_and_rect('imgs/flying_meters.png', ((self.WIDTH / 10) * 8, (self.HEIGHT / 9) * 8))
-      self.writing(f'{meters} meters', 24, (self.WIDTH / 9) * 8, (self.HEIGHT / 9) * 8, font2, BLACK)
+    self.symbols_surf_and_rect('imgs/hp.png',
+                               (self.WIDTH / 12, self.HEIGHT / 8))
+    self.symbols_surf_and_rect('imgs/flying_meters.png',
+                               ((self.WIDTH / 10) * 8, (self.HEIGHT / 9) * 8))
+    self.writing(f'{meters} meters', 24, (self.WIDTH / 9) * 8,
+                 (self.HEIGHT / 9) * 8, font2, BLACK)
 
   def symbols_surf_and_rect(self, image_path, center):
-      symbol_surf = pygame.image.load(image_path).convert_alpha()
-      symbol_rect = symbol_surf.get_rect(center=center)
-      self.screen.blit(symbol_surf, symbol_rect)
+    symbol_surf = pygame.image.load(image_path).convert_alpha()
+    symbol_rect = symbol_surf.get_rect(center=center)
+    self.screen.blit(symbol_surf, symbol_rect)
 
   def run(self):
     self.player.sprite.gravity_speed = 10
