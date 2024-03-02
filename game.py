@@ -94,7 +94,7 @@ class Game:
     display.fill(color)
     pygame.time.delay(msec)
     self.writing('BOOM', 92, self.WIDTH / 2, self.HEIGHT / 2, font1, BLACK)
-    pygame.display.update()
+    pygame.display.flip()
 
   def writing(self, text, size, x, y, font, color):
     font = setup_font(size, font)

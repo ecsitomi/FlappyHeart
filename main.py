@@ -8,8 +8,8 @@ pygame.mixer.init()
 
 def main():
 
-  WIDTH, HEIGHT = settings.initialize()
-  SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))  
+  #WIDTH, HEIGHT = settings.initialize()
+  SCREEN = pygame.display.set_mode((0, 0), pygame.FULLSCREEN | pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE)  
   clock = pygame.time.Clock()
   pygame.display.set_caption('Flappy Heart')
   game = Game(SCREEN)
@@ -30,7 +30,7 @@ def main():
         elif event.key == pygame.K_SPACE:
           starting = False
 
-    pygame.display.update()
+    pygame.display.flip()
     clock.tick(FPS)
 
 if __name__ == "__main__":
