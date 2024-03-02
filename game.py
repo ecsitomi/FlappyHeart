@@ -26,7 +26,7 @@ class Game:
     self.sound = pygame.mixer.Sound(beat2)
     self.sound.play(-1)
     self.death_sound = pygame.mixer.Sound(death)
-    self.death_sound.set_volume(0.5)
+    self.death_sound.set_volume(0.3)
     self.death_sound.stop()
 
   def counting(self):

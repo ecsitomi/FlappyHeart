@@ -25,6 +25,7 @@ beat2 = 'sounds/beat222.wav'
 beat3 = 'sounds/beat333.wav'
 death = 'sounds/death.wav'
 kiss = 'sounds/kiss.wav'
+theme = 'sounds/theme.wav'  
 
 
 def initialize():
