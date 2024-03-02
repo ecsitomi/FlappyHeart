@@ -23,6 +23,11 @@ class Game:
     self.create = True
     self.pipe_color = 1
     self.highest = 0
+    self.sound = pygame.mixer.Sound(beat2)
+    self.sound.play(-1)
+    self.death_sound = pygame.mixer.Sound(death)
+    self.death_sound.set_volume(0.5)
+    self.death_sound.stop()
 
   def counting(self):
     if self.create:
@@ -36,7 +41,6 @@ class Game:
 
   def create_pipe(self):
     color = self.pipe_color
-    #color = random.randint(1, 5)
     y = random.randint(0, 100)
     speed_y = random.randint(0, 10)
     speed_x = random.randint(1, 5)
@@ -49,12 +53,12 @@ class Game:
 
   def create_valentin(self):
     random_height = random.randint(100, self.HEIGHT - 100)
-    #random_speed =  random.randint(5, 8)
     random_speed = 6
     self.valentin.add(Valentin(random_height, random_speed, self.right_side))
 
   def check_collision(self):
     player = self.player.sprite
+    sound = pygame.mixer.Sound(kiss)
     for pipe in self.pipes:
       if pipe.rect.x < (-90):
         pipe.kill()
@@ -67,6 +71,7 @@ class Game:
     elif self.valentin.sprite is not None:
       valentin = self.valentin.sprite
       if player.rect.colliderect(valentin.rect):
+        sound.play()
         self.lighting(self.screen, WHITE, 150)
         player.heart_rate = 60
         self.valentin.empty()
@@ -86,7 +91,6 @@ class Game:
     for pipe in self.pipes:
       pipe.speed_x = 0
       pipe.speed_y = 0
-    #self.lighting(self.screen, RED, 100)
     self.ending(file, self.highest, self.meters)
     self.restart()
 
@@ -113,28 +117,30 @@ class Game:
     self.player.draw(self.screen)
 
   def ending(self, file, highest, score):
+    self.sound.stop()
+    if not pygame.mixer.Channel(0).get_busy():
+      self.death_sound.play()
     self.writing('Game Over', 96, self.WIDTH / 2, self.HEIGHT / 3, font1, BLACK)
     self.writing('SPACE to restart', 56, self.WIDTH / 2, (self.HEIGHT / 9) * 8, font1, BLACK)
     try:
         with open(file, 'r+') as f:
             highest = int(f.read().strip())
             if highest > score:
-                self.writing(f'Highest score: {highest} meters', 16, self.WIDTH / 2, self.HEIGHT / 2, font2, BLACK)
-                self.writing(f'Your score: {score} meters', 16, self.WIDTH / 2, (self.HEIGHT / 2) + 30, font2, BLACK)
+                self.writing(f'Highest score: {highest} meters', 20, self.WIDTH / 2, self.HEIGHT / 2, font2, BLACK)
+                self.writing(f'Your score: {score} meters', 20, self.WIDTH / 2, (self.HEIGHT / 2) + 30, font2, BLACK)
             else:
-                self.writing(f'Your highest score: {score} meters', 16, self.WIDTH / 2, self.HEIGHT / 2, font2, BLACK)
-                f.seek(0)  # Ugrás a fájl elejére
-                f.write(str(score))  # Új score érték felülírása
+                self.writing(f'Your highest score: {score} meters', 20, self.WIDTH / 2, self.HEIGHT / 2, font2, BLACK)
+                f.seek(0)
+                f.write(str(score))
     except FileNotFoundError:
         with open(file, 'w') as f:
             f.write(str(score))
-            self.writing(f'Your highest score: {score} meters', 16, self.WIDTH / 2, self.HEIGHT / 2, font2, BLACK)
-
-
+            self.writing(f'Your highest score: {score} meters', 20, self.WIDTH / 2, self.HEIGHT / 2, font2, BLACK)
 
   def restart(self):
     for event in pygame.event.get():
       if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+        self.death_sound.stop()
         self.player.empty()
         self.valentin.empty()
         self.pipes.empty()
@@ -143,13 +149,13 @@ class Game:
         self.bg_speed = 1
         self.player.add(Player(self.WIDTH, self.HEIGHT))
         self.create = True
-        #self.lighting(self.screen, WHITE, 500)
+        self.sound.play(-1)
 
   def player_bpm(self):
     color = BLACK
     player = self.player.sprite
     heart_rate = player.heart_rate
-    if heart_rate <= 100:
+    if 0 < heart_rate <= 100:
       color = BLACK
     elif 100 < heart_rate <= 150:
       color = YELLOW
@@ -186,3 +192,4 @@ class Game:
     self.player_bpm()
     self.player_meters(self.meters)
     self.counting()
+    

@@ -20,6 +20,11 @@ player_size = 64
 font1 = 'font/FlappyBirdy.ttf'
 font2 = 'font/arial.ttf'
 file = 'highscore.txt'
+beat1 = 'sounds/beat111.wav'
+beat2 = 'sounds/beat222.wav'
+beat3 = 'sounds/beat333.wav'
+death = 'sounds/death.wav'
+kiss = 'sounds/kiss.wav'
 
 
 def initialize():
