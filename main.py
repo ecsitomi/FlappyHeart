@@ -1,17 +1,15 @@
 #main.py
-import pygame, settings
+import pygame
 from settings import *
 from game import Game
-
-pygame.init()
-pygame.mixer.init()
                    
 def main():
-
-  #WIDTH, HEIGHT = settings.initialize()
+  pygame.init()
+  pygame.mixer.init() 
+  
   SCREEN = pygame.display.set_mode((0, 0), pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.FULLSCREEN )  
-  clock = pygame.time.Clock()
   pygame.display.set_caption('Flappy Heart')
+  clock = pygame.time.Clock()
   game = Game(SCREEN)
   starting = True 
 
