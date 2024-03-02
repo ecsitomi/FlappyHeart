@@ -23,8 +23,14 @@ class Game:
     self.create = True
     self.pipe_color = 1
     self.highest = 0
-    self.sound = pygame.mixer.Sound(beat2)
+
+    self.sound = pygame.mixer.Sound(beat1)
     self.sound.play(-1)
+    self.sound2 = pygame.mixer.Sound(beat2)
+    self.sound2.stop()
+    self.sound3 = pygame.mixer.Sound(beat3)
+    self.sound3.stop()
+
     self.death_sound = pygame.mixer.Sound(death)
     self.death_sound.set_volume(0.3)
     self.death_sound.stop()
@@ -149,7 +155,6 @@ class Game:
         self.bg_speed = 1
         self.player.add(Player(self.WIDTH, self.HEIGHT))
         self.create = True
-        self.sound.play(-1)
 
   def player_bpm(self):
     color = BLACK
@@ -157,11 +162,26 @@ class Game:
     heart_rate = player.heart_rate
     if 0 < heart_rate <= 100:
       color = BLACK
+      self.sound2.stop()
+      self.sound3.stop()
+      if not pygame.mixer.Channel(0).get_busy():
+        self.sound.play(-1)
     elif 100 < heart_rate <= 150:
       color = YELLOW
+      self.sound3.stop()
+      self.sound.stop()
+      if not pygame.mixer.Channel(0).get_busy():
+        self.sound2.play(-1)
     elif 150 < heart_rate <= 200:
       color = RED
+      self.sound2.stop()
+      self.sound.stop()
+      if not pygame.mixer.Channel(0).get_busy():
+        self.sound3.play(-1)
     else:
+      self.sound.stop()
+      self.sound2.stop()
+      self.sound3.stop()
       self.handle_death()
     self.writing(f'{round(heart_rate)} bpm', 24, self.WIDTH / 7,
                  self.HEIGHT / 8, font2, color)
