@@ -10,7 +10,7 @@ class Game:
 
   def __init__(self, screen):
     self.WIDTH, self.HEIGHT = initialize()
-    self.right_side = self.WIDTH + 50
+    self.right_side = self.WIDTH + 30
     self.screen = screen
     self.pipes = pygame.sprite.Group()
     self.player = pygame.sprite.GroupSingle()
@@ -40,7 +40,7 @@ class Game:
       self.counter += 1
       if self.counter % 25 == 0:
         self.meters += 1
-      elif self.counter % 163 == 0 and len(self.pipes) < 7:
+      elif self.counter % 143 == 0 and len(self.pipes) < 9:
         self.create_pipe()
       if self.counter % 1848 == 0 and len(self.valentin) < 1:
         self.create_valentin()
@@ -49,7 +49,7 @@ class Game:
     color = self.pipe_color
     y = random.randint(0, 100)
     speed_y = random.randint(0, 10)
-    speed_x = random.randint(1, 5)
+    speed_x = random.randint(2, 7)
     invert = random.choice([True, False])
     self.pipes.add(
         Pipe(color, y, speed_y, speed_x, invert, self.right_side, self.HEIGHT))
@@ -77,11 +77,11 @@ class Game:
     elif self.valentin.sprite is not None:
       valentin = self.valentin.sprite
       if player.rect.colliderect(valentin.rect):
-        sound.play()
         self.lighting(self.screen, WHITE, 150)
         player.heart_rate = 60
         self.valentin.empty()
         self.pipes.empty()
+        sound.play()
       elif valentin.rect.x < (-90):
         valentin.kill()
 
